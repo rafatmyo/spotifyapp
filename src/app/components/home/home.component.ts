@@ -7,17 +7,23 @@ import { SpotifyService } from 'src/app/services/spotify.service';
   styleUrls: []
 })
 export class HomeComponent {
+    nuevasCanciones: any[] = [];
+    loading: boolean;
+    error = false;
+    errorMesage: string;
+    
+    constructor (private spotify: SpotifyService) {
+        this.loading = true;
+        this.error = false;
 
-  nuevasCanciones: any[] = [];
-  loading: boolean;
-
-  constructor (private spotify: SpotifyService) {
-      this.loading = true;
-    this.spotify.getNewReleases()
-      .subscribe( (data:any) => {
-        this.nuevasCanciones = data;
-        this.loading = false;
-      })
-  }
-
+        this.spotify.getNewReleases()
+        .subscribe( (data:any) => {
+            this.nuevasCanciones = data;
+            this.loading = false;
+        }, (errorService)=>{
+            this.error = true;
+            this.loading = false;
+            this.errorMesage = errorService.error.error.message;
+        });
+    }
 }
